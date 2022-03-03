@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 from sklearn.neighbors import KNeighborsClassifier
 import os
+import sys
 from minio import Minio
 from minio.error import InvalidResponseError
 import pandas as pd
@@ -24,19 +25,23 @@ column_name = {
 }
 
 # Etape 2 connexion au datalake S3
+endpoint=os.getenv('DATALAKE_HOST') or sys.exit("DATALAKE_HOST is not set")
+access_key=os.getenv('DATALAKE_ACCESS_KEY') or sys.exit("DATALAKE_ACCESS_KEY is not set")
+secret_key=os.getenv('DATALAKE_SECRET_KEY') or sys.exit("DATALAKE_SECRET_KEY is not set")
+
 client = Minio(
-    endpoint=os.environ['DATALAKE_URL'],
-    access_key=os.environ['ACCESS_KEY'],
-    secret_key=os.environ['SECRET_KEY'],
+    endpoint=os.getenv('DATALAKE_HOST'),
+    access_key=os.getenv('DATALAKE_ACCESS_KEY'),
+    secret_key=os.getenv('DATALAKE_SECRET_KEY'),
     secure=True
 )
-
+bucket = os.getenv('DATALAKE_BUCKET', 'group-prj00001') # or sys.exit("DATALAKE_BUCKET is missing")
 try:
-    with client.get_object('group-prj00001', 'titanic/data/train.csv') as object:
+    with client.get_object(bucket_name = bucket, object_name = 'titanic/data/train.csv') as object:
         titanic = pd.read_csv(object)
 except InvalidResponseError as err:
     print(err)
-    os.exit(1)
+    sys.exit("Connection error")
 
 # Etape 3 read_csv depuis l'objet S3
 print(titanic.head())
