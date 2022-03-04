@@ -3,7 +3,6 @@ from sklearn.neighbors import KNeighborsClassifier
 import os
 import requests
 from hdfs.ext.kerberos import KerberosClient
-import numpy as np
 import pandas as pd
 
 
@@ -28,8 +27,9 @@ column_name = {
 session = requests.Session()
 session.verify = False
 client = KerberosClient(
-    'https://' + os.environ['HDFS_HOST'] + ':'+os.environ['HDFS_PORT'],
-    mutual_auth="REQUIRED", session=session,
+    'https://' + os.environ['HDFS_HOST'] + ':' + os.environ['HDFS_PORT'],
+    mutual_auth="REQUIRED",
+    session=session,
     root='/projects/sandbox/titanic')
 
 # Etape 3 read_csv sur HDFS
@@ -50,9 +50,7 @@ print(titanic.head())
 y_train = titanic['survived']
 X_train = titanic.drop('survived', axis=1)
 
-
 # ## Entraînement sur un modèle KNN
-
 model = KNeighborsClassifier()
 model.fit(X_train, y_train)  # entrainement du modele
 print(model.score(X_train, y_train))  # évaluation
