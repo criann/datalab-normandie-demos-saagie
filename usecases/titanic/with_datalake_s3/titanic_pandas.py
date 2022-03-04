@@ -25,19 +25,26 @@ column_name = {
 }
 
 # Etape 2 connexion au datalake S3
-endpoint=os.getenv('DATALAKE_HOST') or sys.exit("DATALAKE_HOST is not set")
-access_key=os.getenv('DATALAKE_ACCESS_KEY') or sys.exit("DATALAKE_ACCESS_KEY is not set")
-secret_key=os.getenv('DATALAKE_SECRET_KEY') or sys.exit("DATALAKE_SECRET_KEY is not set")
+endpoint = os.getenv('DATALAKE_HOST') \
+    or sys.exit("DATALAKE_HOST is not set")
+access_key = os.getenv('DATALAKE_ACCESS_KEY') \
+    or sys.exit("DATALAKE_ACCESS_KEY is not set")
+secret_key = os.getenv('DATALAKE_SECRET_KEY') \
+    or sys.exit("DATALAKE_SECRET_KEY is not set")
+bucket = os.getenv('DATALAKE_BUCKET', 'group-prj00001')
+# or sys.exit("DATALAKE_BUCKET is missing")
 
 client = Minio(
-    endpoint=os.getenv('DATALAKE_HOST'),
-    access_key=os.getenv('DATALAKE_ACCESS_KEY'),
-    secret_key=os.getenv('DATALAKE_SECRET_KEY'),
+    endpoint=endpoint,
+    access_key=access_key,
+    secret_key=secret_key,
     secure=True
 )
-bucket = os.getenv('DATALAKE_BUCKET', 'group-prj00001') # or sys.exit("DATALAKE_BUCKET is missing")
 try:
-    with client.get_object(bucket_name = bucket, object_name = 'titanic/data/train.csv') as object:
+    with client.get_object(
+        bucket_name=bucket,
+        object_name='titanic/data/train.csv'
+    ) as object:
         titanic = pd.read_csv(object)
 except InvalidResponseError as err:
     print(err)
