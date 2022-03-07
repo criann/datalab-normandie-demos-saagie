@@ -9,3 +9,4 @@ Différents cas exemples sont fournis afin de vous entraîner avant que vous pui
 - Titanic (prévision sur la survie des passagers du Titanic) :
     - sans datalake, avec un script python utilisant les bibliothèques python pandas et seaborn : [voir ici](usecases/titanic/without_datalake/)
     - avec datalake S3 et un script python utilisant les bibliothèques python pandas et minio (client S3) : [voir ici](usecases/titanic/with_datalake_s3/)
+    - avec datalake S3 et un script python utilisant les directives S3 SELECT supportées et la bibliothèques python boto3 : [voir ici](usecases/titanic/s3_select/)
